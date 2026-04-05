@@ -1099,16 +1099,31 @@ body {
     justify-content: center;
     text-align: center;
     font-size: clamp(1rem, 4vw, 1.8rem);
+    flex-direction: column;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .project-item.thinking .project-item-image {
+    position: relative;
+    left: auto;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 10px;
+    opacity: 1;
   }
 
   .project-item.thinking .project-item-text {
     padding-left: 0;
+    opacity: 0;
   }
 
   .project-item.thinking::after {
     left: 50%;
     transform: translateX(-50%);
     font-size: clamp(1rem, 4vw, 1.8rem);
+    top: auto;
+    bottom: 5px;
   }
 
   .project-item.thinking-ended {
@@ -1116,6 +1131,9 @@ body {
     margin-left: 0;
     justify-content: center;
     text-align: center;
+    flex-direction: column;
+    padding: 15px;
+    border-radius: 8px;
   }
 
   .project-item.thinking-ended .project-item-text::before {
@@ -1125,6 +1143,11 @@ body {
   .project-item.thinking-ended .project-item-text {
     padding-left: 0;
     padding-right: 10px;
+    opacity: 1;
+  }
+
+  .project-item.thinking-ended .project-item-image {
+    opacity: 0;
   }
 
   .project-item-image {
