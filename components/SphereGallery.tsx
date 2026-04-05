@@ -2,9 +2,11 @@ import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useTexture, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import { GalleryImage, Language } from '@/types';
 
 interface SphereGalleryProps {
-  images: string[];
+  images: GalleryImage[];
+  language?: Language;
 }
 
 // 检测 WebGL 支持
@@ -19,7 +21,7 @@ function isWebGLAvailable(): boolean {
 }
 
 // 降级显示组件
-function FallbackGallery({ images }: { images: string[] }) {
+function FallbackGallery({ images }: { images: GalleryImage[] }) {
   return (
     <div
       style={{
@@ -60,7 +62,7 @@ function FallbackGallery({ images }: { images: string[] }) {
             }}
           >
             <img
-              src={img}
+              src={img.thumbnail}
               alt={`照片 ${i + 1}`}
               style={{
                 position: 'absolute',
@@ -153,22 +155,33 @@ function HeartParticles() {
 // 单张照片精灵（可点击放大）
 function PhotoSprite({ 
   position, 
-  url, 
+  image,
   isSelected,
   onSelect 
 }: { 
   position: [number, number, number]; 
-  url: string;
+  image: GalleryImage;
   isSelected: boolean;
   onSelect: () => void;
 }) {
-  const texture = useTexture(url);
+  const thumbnailTexture = useTexture(image.thumbnail);
+  const [fullSizeTexture, setFullSizeTexture] = useState<THREE.Texture | null>(null);
   const spriteRef = useRef<THREE.Sprite>(null);
   const [hovered, setHovered] = useState(false);
   
   // 目标位置和缩放
   const targetPosition = useRef(new THREE.Vector3(...position));
   const targetScale = useRef(new THREE.Vector3(4, 4, 1));
+
+  // 选中时加载原图
+  useEffect(() => {
+    if (isSelected && !fullSizeTexture) {
+      const loader = new THREE.TextureLoader();
+      loader.load(image.fullSize, (texture) => {
+        setFullSizeTexture(texture);
+      });
+    }
+  }, [isSelected, image.fullSize, fullSizeTexture]);
 
   const handlePointerOver = () => {
     if (!isSelected) {
@@ -222,6 +235,9 @@ function PhotoSprite({
     spriteRef.current.scale.lerp(targetScale.current, 0.08);
   });
 
+  // 使用原图（如果已加载且选中）或缩略图
+  const currentTexture = isSelected && fullSizeTexture ? fullSizeTexture : thumbnailTexture;
+
   return (
     <sprite 
       ref={spriteRef}
@@ -231,7 +247,7 @@ function PhotoSprite({
       onPointerOut={handlePointerOut}
       onClick={handleClick}
     >
-      <spriteMaterial map={texture} transparent />
+      <spriteMaterial map={currentTexture} transparent />
     </sprite>
   );
 }
@@ -242,14 +258,14 @@ function PhotoSphere({
   selectedPhoto,
   onPhotoSelect 
 }: { 
-  images: string[];
+  images: GalleryImage[];
   selectedPhoto: number | null;
   onPhotoSelect: (index: number | null) => void;
 }) {
   const radius = 14;
   
   const photoPositions = useMemo(() => {
-    const positions: { position: [number, number, number]; url: string }[] = [];
+    const positions: { position: [number, number, number]; image: GalleryImage }[] = [];
     const count = images.length;
     
     for (let i = 0; i < count; i++) {
@@ -262,7 +278,7 @@ function PhotoSphere({
           radius * Math.sin(phi) * Math.sin(theta),
           radius * Math.cos(phi)
         ],
-        url: images[i % images.length]
+        image: images[i % images.length]
       });
     }
     return positions;
@@ -274,7 +290,7 @@ function PhotoSphere({
         <PhotoSprite 
           key={i} 
           position={photo.position} 
-          url={photo.url}
+          image={photo.image}
           isSelected={selectedPhoto === i}
           onSelect={() => onPhotoSelect(selectedPhoto === i ? null : i)}
         />
@@ -283,7 +299,7 @@ function PhotoSphere({
   );
 }
 
-export default function SphereGallery({ images }: SphereGalleryProps) {
+export default function SphereGallery({ images, language = 'zh-cn' }: SphereGalleryProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [webGLSupported, setWebGLSupported] = useState<boolean | null>(null);
   const [webGLError, setWebGLError] = useState<string | null>(null);
@@ -294,7 +310,10 @@ export default function SphereGallery({ images }: SphereGalleryProps) {
   }, []);
 
   const extendedImages = useMemo(() => {
-    const result: string[] = [];
+    if (images.length >= 30) {
+      return images;
+    }
+    const result: GalleryImage[] = [];
     for (let i = 0; i < 30; i++) {
       result.push(images[i % images.length]);
     }
@@ -337,12 +356,38 @@ export default function SphereGallery({ images }: SphereGalleryProps) {
       style={{
         width: '100%',
         height: '100vh',
-        position: 'relative'
+        position: 'relative',
+        zIndex: 0
       }}
     >
+      {selectedPhoto !== null && extendedImages[selectedPhoto] && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            background: 'rgba(0,0,0,0.7)',
+            color: '#fff',
+            padding: '10px 24px',
+            borderRadius: '25px',
+            fontSize: '15px',
+            fontWeight: 500,
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+          }}
+        >
+          {language === 'zh-tw'
+            ? (extendedImages[selectedPhoto].twLabel || extendedImages[selectedPhoto].zhLabel || extendedImages[selectedPhoto].enLabel || '')
+            : language === 'en'
+              ? (extendedImages[selectedPhoto].enLabel || extendedImages[selectedPhoto].zhLabel || '')
+              : (extendedImages[selectedPhoto].zhLabel || extendedImages[selectedPhoto].enLabel || '')}
+        </div>
+      )}
       <Canvas
         camera={{ position: [0, 0, 30], fov: 60 }}
-        style={{ background: 'transparent' }}
+        style={{ background: 'transparent', pointerEvents: 'auto' }}
         gl={{
           antialias: true,
           alpha: true,
@@ -350,10 +395,6 @@ export default function SphereGallery({ images }: SphereGalleryProps) {
           failIfMajorPerformanceCaveat: false
         }}
         onPointerMissed={() => setSelectedPhoto(null)}
-        onError={({ error }) => {
-          console.error('WebGL Error:', error);
-          setWebGLError(error.message || 'WebGL context creation failed');
-        }}
       >
         <ambientLight intensity={1} />
 

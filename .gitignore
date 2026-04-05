@@ -40,6 +40,5 @@ Thumbs.db
 *.temp
 .cache/
 
-.doc/
-
-tsconfig.tsbuildinfo
+.codebuddy/
+.trae/
