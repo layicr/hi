@@ -81,14 +81,16 @@ export const SOCIAL_IMAGES = [
 
 export const SOCIAL_LINKS = [
   { icon: 'fas fa-globe', url: 'http://www.lyc.la', zhLabel: 'lyc.la', enLabel: 'lyc.la', twLabel: 'lyc.la' },
-  { icon: 'fas fa-house', url: 'http://hi.lyc.la', zhLabel: 'hi lyc', enLabel: 'hi lyc', twLabel: 'hi lyc' },
+  { icon: 'fas fa-heartbeat', url: 'http://hi.lyc.la', zhLabel: 'hi lyc', enLabel: 'hi lyc', twLabel: 'hi lyc' },
   { icon: 'fas fa-blog', url: 'http://b.lyc.la', zhLabel: '博客 lyc', enLabel: 'blog lyc', twLabel: '博客 lyc' },
   { icon: 'fas fa-music', url: 'http://ilive.lyc.la', zhLabel: '演唱会 lyc', enLabel: 'ilive lyc', twLabel: '演唱會 lyc' },
   { icon: 'fa-brands fa-github', url: 'https://github.com/layicr', zhLabel: 'Github', enLabel: 'Github', twLabel: 'Github' },
   { icon: 'fa-brands fa-weibo', url: 'http://weibo.com/layicr', zhLabel: '微博', enLabel: 'Weibo', twLabel: '微博' },
   { icon: 'fa-brands fa-weixin', url: 'https://mp.weixin.qq.com/s/S1sq45LC_iQuCLYxzoaRkw', zhLabel: '微信', enLabel: 'Weixin', twLabel: '微信' },
   { icon: 'fab fa-tiktok', url: 'https://v.douyin.com/5nAiAZQoUXw/', zhLabel: '抖音', enLabel: 'TikTok', twLabel: '抖音' },
+  { icon: 'fa fa-play-circle', url: 'https://space.bilibili.com/29825132', zhLabel: 'Bilibili', enLabel: 'Bilibili', twLabel: 'Bilibili' },
   { icon: 'fab fa-twitter', url: 'http://twitter.com/layicr', zhLabel: 'Twitter', enLabel: 'Twitter', twLabel: 'Twitter' },
   { icon: 'fab fa-instagram', url: 'http://www.instagram.com/ilayicr', zhLabel: 'Instagram', enLabel: 'Instagram', twLabel: 'Instagram' },
-  { icon: 'fab fa-facebook', url: 'http://www.facebook.com/layicr', zhLabel: 'Facebook', enLabel: 'Facebook', twLabel: 'Facebook' }
+  { icon: 'fab fa-facebook', url: 'http://www.facebook.com/layicr', zhLabel: 'Facebook', enLabel: 'Facebook', twLabel: 'Facebook' },
+  { icon: 'fab fa-youtube', url: 'http://youtube.com/@lyc9530', zhLabel: 'YouTube', enLabel: 'YouTube', twLabel: 'YouTube' }
 ];
