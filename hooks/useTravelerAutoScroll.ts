@@ -7,7 +7,6 @@ export function useTravelerAutoScroll(isMounted: boolean) {
   useEffect(() => {
     if (!isMounted || typeof window === 'undefined') return;
 
-    // 确保页面加载时滚动到顶部
     window.scrollTo({ top: 0, behavior: 'auto' });
 
     const travelerSection = document.querySelector('.traveler-section');
@@ -18,7 +17,7 @@ export function useTravelerAutoScroll(isMounted: boolean) {
 
     setTimeout(() => {
       initialLoadRef.current = false;
-    }, 2000);
+    }, 1000);
 
     const observer = new IntersectionObserver(
       (entries) => {

@@ -41,10 +41,15 @@ const Home: React.FC = () => {
   useInitAllAnimations(isMounted);
   useBrandAnimation(isMounted, currentData.brandSection.quote);
 
-  // 确保页面加载完成后滚动到顶部
   useEffect(() => {
     if (isMounted && typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'auto' });
+      const scrollToTop = () => {
+        window.scrollTo(0, 0);
+      };
+      scrollToTop();
+      setTimeout(scrollToTop, 100);
+      setTimeout(scrollToTop, 200);
     }
   }, [isMounted]);
 
